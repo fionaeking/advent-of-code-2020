@@ -20,10 +20,7 @@ namespace Day1
         public static void Main(string[] args)
         {
             Parser.Default.ParseArguments<Options>(args)
-                   .WithParsed<Options>(o =>
-                   {
-                       Application(o);
-                   });
+                   .WithParsed<Options>(o => { Application(o); });
         }
 
         private static void Application(Options opts)
