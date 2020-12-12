@@ -8,10 +8,10 @@ namespace Day1
 {
     class Options
     {
-        [Option("total", Required = true, HelpText = "Input file to read.")]
+        [Option("total", Required = true, HelpText = "Number to sum to.")]
         public int Total { get; set; }
 
-        [Option("numEntries", Required = true, HelpText = "The maximum number of bytes to process.")]
+        [Option("numEntries", Required = true, HelpText = "Number of elements to sum (min 2).")]
         public int NumEntries { get; set; }
     }
 
