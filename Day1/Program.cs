@@ -26,7 +26,7 @@ namespace Day1
                    });
         }
 
-        public static void Application(Options opts)
+        private static void Application(Options opts)
         {
             var expenseReport = new ExpenseReport();
             var result = expenseReport.Run(GetInputAsListNums(), opts.Total, opts.NumEntries);
@@ -53,7 +53,7 @@ namespace Day1
             input.OrderBy(i=>i).ToList().RemoveAll(x => x>totalSum);
             return CalculateResult(input, totalSum, numEntries);
         }
-        public int CalculateResult(List<int> input, int totalSum, int numEntries)
+        private int CalculateResult(List<int> input, int totalSum, int numEntries)
         {
             var i = input.Take(totalSum/numEntries);
             while (numEntries>2)
