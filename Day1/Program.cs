@@ -28,17 +28,15 @@ namespace Day1
 
         public static void Application(Options opts)
         {
-            var desiredTotal = opts.Total;
-            var numEntries = opts.NumEntries;
             var expenseReport = new ExpenseReport();
-            var result = expenseReport.Run(GetInputAsListNums(), desiredTotal, numEntries);
+            var result = expenseReport.Run(GetInputAsListNums(), opts.Total, opts.NumEntries);
             if(result > 0) 
             {
                 Console.WriteLine($"The answer is {result}");
             }
             else 
             {
-                Console.WriteLine($"Couldn't find {numEntries} numbers which add up to {desiredTotal}");   
+                Console.WriteLine($"Couldn't find {opts.NumEntries} numbers which add up to {opts.Total}");   
             }  
         }
 
@@ -52,8 +50,7 @@ namespace Day1
     {
         public int Run(List<int> input, int totalSum, int numEntries)
         {
-            input.OrderBy(i=>i);
-            input.RemoveAll(x => x>totalSum);
+            input.OrderBy(i=>i).ToList().RemoveAll(x => x>totalSum);
             return CalculateResult(input, totalSum, numEntries);
         }
         public int CalculateResult(List<int> input, int totalSum, int numEntries)
