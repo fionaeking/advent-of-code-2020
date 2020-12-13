@@ -17,8 +17,7 @@ namespace Day6
             foreach (var x in input)
             {
                 var numberPeople = x.Split("\r\n").Count();
-                sum += x.Replace("\n", "")
-                    .Replace("\r", "")
+                sum += x.TrimEnd()
                     .GroupBy(i => i)
                     .Select(grp => grp.Count())
                     .Where(count => count==numberPeople)
