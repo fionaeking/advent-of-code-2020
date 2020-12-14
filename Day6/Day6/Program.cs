@@ -10,8 +10,7 @@ namespace Day6
         {
             // Read in values and split by newline
             var input = File.ReadAllText("PuzzleInput.txt")
-                .Split("\r\n\r\n")
-                .ToList();
+                .Split("\r\n\r\n");
 
             var sum = 0;
             foreach (var x in input)
