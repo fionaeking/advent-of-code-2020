@@ -1,55 +1,50 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Collections.Generic;
 
 namespace Day7
 {
     class Program
     {
+
         static void Main(string[] args)
         {
-            var input = File.ReadAllLines("PuzzleInput.txt");
-            var outerDict = new Dictionary<string, Dictionary<string, int>> { };
-            foreach (var i in input)
-            {
-                var kvp = i.Replace(".\r\n", "").Replace(" bags", "")
-                    .Replace(" bag", "").Replace(".", "")
-                    .Split(" contain ");
-                var key = kvp[0];
-                if (!kvp[1].StartsWith("no other"))
-                {
-                    var values = kvp[1].Split(", ");
-                    var innerDict = new Dictionary<string, int>{ };
-                    foreach (var value in values)
-                    {
-                        var y = new Tuple<string, int>(value[2..], int.Parse(value.Substring(0, 1)));
-                        innerDict.Add(y.Item1, y.Item2);
-                    }
-                    outerDict.Add(key, innerDict);
-                }
-            }
+            var input = File.ReadLines("PuzzleInput.txt")
+                .ToDictionary(
+            l => Regex.Match(l, @"^(\w+ \w+)").Groups[1].Value,
+            l => l.Contains("no other bags.")
+              ? new Dictionary<string, int>() { }//Bags.Empty
+              : Regex.Matches(l, @"(\d+) (\w+ \w+) bags?[,.]\s?")
+                .ToDictionary(
+                  x => x.Groups[2].Value,
+                  x => int.Parse(x.Groups[1].Value)));
 
-            // We only care about bags which can hold gold bags initially
-            var allBags = outerDict.Where(x => x.Value.ContainsKey("shiny gold"))
-                .Select(x => x.Key).ToList();
-            var currBags = allBags;
-            // Find all bags which can hold these bags!
-            // We don't really care about numbers for now
-            var diff = allBags.Count();
-            while (diff>0)
-            {
-                List<string> nextBags = new List<string> { };
-                foreach (var bag in currBags)
-                {
-                    nextBags.AddRange(outerDict.Where(x => x.Value.ContainsKey(bag)).Select(x => x.Key));
-                }
-                allBags.AddRange(nextBags);
-                currBags = nextBags;
-                diff = nextBags.Count();
-            }
-            Console.WriteLine(allBags.Distinct().Count());
-
+            Console.WriteLine(PartOne("shiny gold", input));
+            Console.WriteLine(PartTwo("shiny gold", input));
         }
+
+        static int PartOne(string bag, Dictionary<string, Dictionary<string, int>> input)
+        {
+            var sum = 0;
+            foreach (var b in input.Values)
+            {
+                sum += CheckContainsBag(b, bag, input) ? 1 : 0;
+            }
+            return sum;
+        }
+
+        static bool CheckContainsBag(Dictionary<string, int> bags, string bag, Dictionary<string, Dictionary<string, int>> input)
+        {
+            return bags.ContainsKey(bag) || bags.Keys.Any(b => CheckContainsBag(input[b], bag, input));
+        }
+
+        static int PartTwo(string bag, Dictionary<string, Dictionary<string, int>> input)
+        {
+            return input[bag].Sum(b => b.Value + b.Value * PartTwo(b.Key, input));
+        }
+        
     }
 }
+
