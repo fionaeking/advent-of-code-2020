@@ -53,11 +53,11 @@ namespace Day11
             
         }
 
-        static int JRepeatableFunction(char[][] input, int i, int j, int valToStop, bool increment)
+        static int JRepeatableFunction(char[][] input, int i, int j, int valToStop)
         {
             var check = false;
             var jCopy = j;
-            var valToAdd = increment ? 1 : -1;
+            var valToAdd = valToStop == 0 ? -1 : 1;
             while (!check)
             {
                 jCopy += valToAdd;
@@ -70,11 +70,11 @@ namespace Day11
             return EqualsChar(input[i][jCopy], '#');
         }
 
-        static int IRepeatableFunction(char[][] input, int i, int j, int valToStop, bool increment)
+        static int IRepeatableFunction(char[][] input, int i, int j, int valToStop)
         {
             var check = false;
             var iCopy = i;
-            var valToAdd = increment ? 1 : -1;
+            var valToAdd = valToStop == 0 ? -1 : 1;
             while (!check)
             {
                 iCopy += valToAdd;
@@ -87,13 +87,13 @@ namespace Day11
             return EqualsChar(input[iCopy][j], '#');
         }
 
-        static int IJRepeatableFunction(char[][] input, int i, int j, int valToStopI, int valToStopJ, bool incrementI, bool incrementJ)
+        static int IJRepeatableFunction(char[][] input, int i, int j, int valToStopI, int valToStopJ)
         {
             var check = false;
             var iCopy = i;
             var jCopy = j;
-            var valToAddI = incrementI ? 1 : -1;
-            var valToAddJ = incrementJ ? 1 : -1;
+            var valToAddI = valToStopI==0 ? -1 : 1;
+            var valToAddJ = valToStopJ==0 ? -1 : 1;
             while (!check)
             {
                 iCopy += valToAddI;
@@ -115,42 +115,42 @@ namespace Day11
 
             if (j < maxX)
             {
-                count += JRepeatableFunction(input, i, j, maxX, true);
+                count += JRepeatableFunction(input, i, j, maxX);
             }
 
             if (j > 0)
             {
-                count += JRepeatableFunction(input, i, j, 0, false);
+                count += JRepeatableFunction(input, i, j, 0);
             }
 
             if (i > 0)
             {
-                count += IRepeatableFunction(input, i, j, 0, false);
+                count += IRepeatableFunction(input, i, j, 0);
             }
 
             if (i < maxY)
             {
-                count += IRepeatableFunction(input, i, j, maxY, true);
+                count += IRepeatableFunction(input, i, j, maxY);
             }
 
             if (i < maxY & j < maxX)
             {
-                count += IJRepeatableFunction(input, i, j, maxY, maxX, true, true);
+                count += IJRepeatableFunction(input, i, j, maxY, maxX);
             }
 
             if (i < maxY & j > 0)
             {
-                count += IJRepeatableFunction(input, i, j, maxY, 0, true, false);
+                count += IJRepeatableFunction(input, i, j, maxY, 0);
             }
 
             if (i > 0 & j > 0)
             {
-                count += IJRepeatableFunction(input, i, j, 0, 0, false, false);
+                count += IJRepeatableFunction(input, i, j, 0, 0);
             }
 
             if (i > 0 & j < maxX)
             {
-                count += IJRepeatableFunction(input, i, j, 0, maxX, false, true);
+                count += IJRepeatableFunction(input, i, j, 0, maxX);
             }
             return count;
         }
