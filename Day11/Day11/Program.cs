@@ -53,140 +53,104 @@ namespace Day11
             
         }
 
-        static int PartTwo(char[][] input, int i, int j, char c)
+        static int JRepeatableFunction(char[][] input, int i, int j, int valToStop, bool increment)
+        {
+            var check = false;
+            var jCopy = j;
+            var valToAdd = increment ? 1 : -1;
+            while (!check)
+            {
+                jCopy += valToAdd;
+                check = CheckChar(input[i][jCopy]);
+                if (jCopy == valToStop)
+                {
+                    break;
+                }
+            }
+            return EqualsChar(input[i][jCopy], '#');
+        }
+
+        static int IRepeatableFunction(char[][] input, int i, int j, int valToStop, bool increment)
+        {
+            var check = false;
+            var iCopy = i;
+            var valToAdd = increment ? 1 : -1;
+            while (!check)
+            {
+                iCopy += valToAdd;
+                check = CheckChar(input[iCopy][j]);
+                if (iCopy == valToStop)
+                {
+                    break;
+                }
+            }
+            return EqualsChar(input[iCopy][j], '#');
+        }
+
+        static int IJRepeatableFunction(char[][] input, int i, int j, int valToStopI, int valToStopJ, bool incrementI, bool incrementJ)
+        {
+            var check = false;
+            var iCopy = i;
+            var jCopy = j;
+            var valToAddI = incrementI ? 1 : -1;
+            var valToAddJ = incrementJ ? 1 : -1;
+            while (!check)
+            {
+                iCopy += valToAddI;
+                jCopy += valToAddJ;
+                check = CheckChar(input[iCopy][jCopy]);
+                if (iCopy == valToStopI | jCopy == valToStopJ)
+                {
+                    break;
+                }
+            }
+            return EqualsChar(input[iCopy][jCopy], '#');
+        }
+
+        static int PartTwo(char[][] input, int i, int j, char ch)
         {
             var count = 0;
             var maxY = input.Length - 1;
             var maxX = input[0].Length - 1;
-            var jCopy = j;
-            var iCopy = i;
 
-            // check if j == maxX
             if (j < maxX)
             {
-                var check = false;
-                jCopy = j;
-                while (!check)
-                {
-                    check = CheckChar(input[i][++jCopy]);
-                    if (jCopy == maxX)
-                    {
-                        break;
-                    }
-                }
-                count += EqualsChar(input[i][jCopy], '#');
+                count += JRepeatableFunction(input, i, j, maxX, true);
             }
 
-            // check if j == 0
             if (j > 0)
             {
-                var check = false;
-                jCopy = j;
-                while (!check)
-                {
-                    check = CheckChar(input[i][--jCopy]);
-                    if(jCopy==0)
-                    {
-                        break;
-                    }
-                }
-                count += EqualsChar(input[i][jCopy], '#');
+                count += JRepeatableFunction(input, i, j, 0, false);
             }
 
-            // check if i == 0
             if (i > 0)
             {
-                var check = false;
-                iCopy = i;
-                while (!check)
-                {
-                    check = CheckChar(input[--iCopy][j]);
-                    if (iCopy == 0)
-                    {
-                        break;
-                    }
-                }
-                count += EqualsChar(input[iCopy][j], '#');
+                count += IRepeatableFunction(input, i, j, 0, false);
             }
 
-            // check if i == 0
             if (i < maxY)
             {
-                var check = false;
-                iCopy = i;
-                while (!check)
-                {
-                    check = CheckChar(input[++iCopy][j]);
-                    if (iCopy == maxY)
-                    {
-                        break;
-                    }
-                }
-                count += EqualsChar(input[iCopy][j], '#');
+                count += IRepeatableFunction(input, i, j, maxY, true);
             }
 
             if (i < maxY & j < maxX)
             {
-                var check = false;
-                iCopy = i;
-                jCopy = j;
-                while (!check)
-                {
-                    check = CheckChar(input[++iCopy][++jCopy]);
-                    if (iCopy == maxY | jCopy == maxX)
-                    {
-                        break;
-                    }
-                }
-                count += EqualsChar(input[iCopy][jCopy], '#');
+                count += IJRepeatableFunction(input, i, j, maxY, maxX, true, true);
             }
 
             if (i < maxY & j > 0)
             {
-                var check = false;
-                iCopy = i;
-                jCopy = j;
-                while (!check)
-                {
-                    check = CheckChar(input[++iCopy][--jCopy]);
-                    if (iCopy == maxY | jCopy == 0)
-                    {
-                        break;
-                    }
-                }
-                count += EqualsChar(input[iCopy][jCopy], '#');
+                count += IJRepeatableFunction(input, i, j, maxY, 0, true, false);
             }
 
             if (i > 0 & j > 0)
             {
-                var check = false;
-                iCopy = i;
-                jCopy = j;
-                while (!check)
-                {
-                    check = CheckChar(input[--iCopy][--jCopy]);
-                    if (iCopy == 0 | jCopy == 0)
-                    {
-                        break;
-                    }
-                }
-                count += EqualsChar(input[iCopy][jCopy], '#');
+                count += IJRepeatableFunction(input, i, j, 0, 0, false, false);
             }
 
             if (i > 0 & j < maxX)
             {
-                var check = false;
-                iCopy = i;
-                jCopy = j;
-                while (!check)
-                {
-                    check = CheckChar(input[--iCopy][++jCopy]);
-                    if (iCopy == 0 | jCopy == maxX)
-                    {
-                        break;
-                    }
-                }
-                count += EqualsChar(input[iCopy][jCopy], '#');
+                count += IJRepeatableFunction(input, i, j, 0, maxX, false, true);
             }
             return count;
         }
