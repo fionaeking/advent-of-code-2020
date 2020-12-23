@@ -13,8 +13,12 @@ namespace Day11
                 .ToList()
                 .Select(x => x.ToCharArray())
                 .ToArray();
-            var secondInput = input.Select(a => (char[])a.Clone()).ToArray();
+            Console.WriteLine(GetCount(input)); 
+        }
 
+        static int GetCount(char[][] input)
+        {
+            var secondInput = input.Select(a => (char[])a.Clone()).ToArray();
             while (true)
             {
                 var changed = false;
@@ -45,12 +49,9 @@ namespace Day11
                 }
                 else
                 {
-                    var count = secondInput.SelectMany(x => x).ToArray().Where(x=> x=='#').Count();
-                    Console.WriteLine(count);
-                    break;
+                    return secondInput.SelectMany(x => x).ToArray().Where(x => x == '#').Count();
                 }
-            }  
-            
+            }
         }
 
         static int JRepeatableFunction(char[][] input, int i, int j, int valToStop)
