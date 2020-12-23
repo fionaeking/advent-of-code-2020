@@ -26,12 +26,12 @@ namespace Day11
                 {
                     for (int j = 0; j < input[0].Length; j++)
                     {
-                        if (input[i][j] == 'L' && PartTwo(input, i, j, '#') == 0)
+                        if (input[i][j] == 'L' && PartTwo(input, i, j) == 0)
                         {
                             secondInput[i][j] = '#';
                             changed = true;
                         }
-                        else if (input[i][j] == '#' && PartTwo(input, i, j, '#') >= 5)
+                        else if (input[i][j] == '#' && PartTwo(input, i, j) >= 5)
                         {
                             secondInput[i][j] = 'L';
                             changed = true;
@@ -54,47 +54,25 @@ namespace Day11
             }
         }
 
-        static int JRepeatableFunction(char[][] input, int i, int j, int valToStop)
-        {
-            var check = false;
-            var jCopy = j;
-            var valToAdd = valToStop == 0 ? -1 : 1;
-            while (!check)
-            {
-                jCopy += valToAdd;
-                check = CheckChar(input[i][jCopy]);
-                if (jCopy == valToStop)
-                {
-                    break;
-                }
-            }
-            return EqualsChar(input[i][jCopy], '#');
-        }
-
-        static int IRepeatableFunction(char[][] input, int i, int j, int valToStop)
-        {
-            var check = false;
-            var iCopy = i;
-            var valToAdd = valToStop == 0 ? -1 : 1;
-            while (!check)
-            {
-                iCopy += valToAdd;
-                check = CheckChar(input[iCopy][j]);
-                if (iCopy == valToStop)
-                {
-                    break;
-                }
-            }
-            return EqualsChar(input[iCopy][j], '#');
-        }
-
-        static int IJRepeatableFunction(char[][] input, int i, int j, int valToStopI, int valToStopJ)
+        static int RecursiveSearch(char[][] input, int i, int j, int? valToStopI, int? valToStopJ)
         {
             var check = false;
             var iCopy = i;
             var jCopy = j;
-            var valToAddI = valToStopI==0 ? -1 : 1;
-            var valToAddJ = valToStopJ==0 ? -1 : 1;
+            var valToAddI = 0;
+            var valToAddJ = 0;
+            if (valToStopI.HasValue)
+            {
+                valToAddI = valToStopI == 0 ? -1 : 1;
+            }
+            if (valToStopJ.HasValue)
+            {
+                valToAddJ = valToStopJ == 0 ? -1 : 1;
+            }
+            if (iCopy == valToStopI | jCopy == valToStopJ)
+            {
+                return 0;
+            }
             while (!check)
             {
                 iCopy += valToAddI;
@@ -108,55 +86,23 @@ namespace Day11
             return EqualsChar(input[iCopy][jCopy], '#');
         }
 
-        static int PartTwo(char[][] input, int i, int j, char ch)
+        static int PartTwo(char[][] input, int i, int j)
         {
             var count = 0;
             var maxY = input.Length - 1;
             var maxX = input[0].Length - 1;
-
-            if (j < maxX)
-            {
-                count += JRepeatableFunction(input, i, j, maxX);
-            }
-
-            if (j > 0)
-            {
-                count += JRepeatableFunction(input, i, j, 0);
-            }
-
-            if (i > 0)
-            {
-                count += IRepeatableFunction(input, i, j, 0);
-            }
-
-            if (i < maxY)
-            {
-                count += IRepeatableFunction(input, i, j, maxY);
-            }
-
-            if (i < maxY & j < maxX)
-            {
-                count += IJRepeatableFunction(input, i, j, maxY, maxX);
-            }
-
-            if (i < maxY & j > 0)
-            {
-                count += IJRepeatableFunction(input, i, j, maxY, 0);
-            }
-
-            if (i > 0 & j > 0)
-            {
-                count += IJRepeatableFunction(input, i, j, 0, 0);
-            }
-
-            if (i > 0 & j < maxX)
-            {
-                count += IJRepeatableFunction(input, i, j, 0, maxX);
-            }
+            count += RecursiveSearch(input, i, j, null, maxX);
+            count += RecursiveSearch(input, i, j, null, 0);
+            count += RecursiveSearch(input, i, j, 0, null);
+            count += RecursiveSearch(input, i, j, maxY, null);
+            count += RecursiveSearch(input, i, j, maxY, maxX);
+            count += RecursiveSearch(input, i, j, maxY, 0);
+            count += RecursiveSearch(input, i, j, 0, 0);
+            count += RecursiveSearch(input, i, j, 0, maxX);
             return count;
         }
 
-        static int CheckIsOccupied(char[][] input, int i, int j, char ch)
+        static int CheckIsOccupied(char[][] input, int i, int j)
         {
             var count = 0;
             var maxY = input.Length - 1;
@@ -164,34 +110,34 @@ namespace Day11
 
             if (j < maxX)
             {
-                count += EqualsChar(input[i][j + 1], ch);
+                count += EqualsChar(input[i][j + 1], '#');
             }
             if (j > 0)
             {
-                count += EqualsChar(input[i][j - 1], ch);
+                count += EqualsChar(input[i][j - 1], '#');
             }
             if (i < maxY)
             {
-                count += EqualsChar(input[i + 1][j], ch);
+                count += EqualsChar(input[i + 1][j], '#');
                 if (j < maxX)
                 {
-                    count += EqualsChar(input[i + 1][j + 1], ch);
+                    count += EqualsChar(input[i + 1][j + 1], '#');
                 }
                 if (j > 0)
                 {
-                    count += EqualsChar(input[i + 1][j - 1], ch);
+                    count += EqualsChar(input[i + 1][j - 1], '#');
                 }
             }
             if (i > 0)
             {
-                count += EqualsChar(input[i - 1][j], ch);
+                count += EqualsChar(input[i - 1][j], '#');
                 if (j < maxX)
                 {
-                    count += EqualsChar(input[i - 1][j + 1], ch);
+                    count += EqualsChar(input[i - 1][j + 1], '#');
                 }
                 if (j > 0)
                 {
-                    count += EqualsChar(input[i - 1][j - 1], ch);
+                    count += EqualsChar(input[i - 1][j - 1], '#');
                 }
             }
             return count;
