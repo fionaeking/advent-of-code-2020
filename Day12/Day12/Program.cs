@@ -21,16 +21,6 @@ namespace Day12
             {
                 var direction = instruction[0];
                 var magnitude = int.Parse(string.Join("",instruction.Skip(1)));
-
-                /*
-                Action N means to move north by the given value.
-                Action S means to move south by the given value.
-                Action E means to move east by the given value.
-                Action W means to move west by the given value.
-                Action L means to turn left the given number of degrees.
-                Action R means to turn right the given number of degrees.
-                Action F means to move forward by the given value in the direction the ship is currently facing.
-                */
                 /*if (direction == 'F')
                 {
                     if (currDir == 0)
@@ -96,25 +86,17 @@ namespace Day12
                         //currDir = currDir % 360;
                         break;
                     case 'F':
-                        //nextWaypointX = currWaypointX;
-                        //nextWaypointY = currWaypointY;
-                        var amountX = magnitude * (currWaypointX - currPointX);
-                        var amountY = magnitude * (currWaypointY - currPointY);
-                        currPointX += amountX;
-                        currPointY += amountY;
-                        //11670
-                        //10680
-                        //currWaypointX = currPointX + currWaypointX;
-                        //currWaypointY = currPointY + currWaypointY;
-                        currWaypointX += amountX;
-                        currWaypointY += amountY;
+                        nextWaypointX = currWaypointX + magnitude * (currWaypointX - currPointX);
+                        nextWaypointY = currWaypointY + magnitude * (currWaypointY - currPointY);
+                        currPointX += magnitude * (currWaypointX - currPointX);
+                        currPointY += magnitude * (currWaypointY - currPointY);
+                        currWaypointX = nextWaypointX;
+                        currWaypointY = nextWaypointY;
                         break;
                     default:
                         Console.WriteLine("Unknown direction");
                         break;
                 }
-                Console.WriteLine($"{currPointX} + {currPointY}");
-                Console.WriteLine($"{currWaypointX} + {currWaypointY}");
             }
             Console.WriteLine(Math.Abs(currPointX) + Math.Abs(currPointY));
         }
